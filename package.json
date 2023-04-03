@@ -1,0 +1,17 @@
+{
+  "name": "svg-logo-generator",
+  "version": "1.0.0",
+  "description": "In this project we are creating a node backend program to generate an svg logo to a user's specifications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^9.1.5",
+    "requirer": "^0.0.4",
+    "svg.js": "^2.7.1"
+  }
+}
