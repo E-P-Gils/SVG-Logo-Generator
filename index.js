@@ -1,45 +1,61 @@
 const inquirer = require("inquirer");
-const readline = require("readline");
-const SVG = require("svg.js");
-const SVGDOM = require("svgdom");
-const document = SVGDOM.createSVGDocument();
 const fs = require("fs"); 
-const draw = SVG(document.documentElement); 
 const { triangle, circle, square } = require("./shapes/shapes");
-const rlInterface = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-})
 
-rlInterface.question("Input a catchy phrase or company name for your Logo!", (text) => {
-    rlInterface.question("What color is your Logo?", (color) => {
-        rlInterface.question("What shape is your logo?(triangle, circle, or square", (shape) => {
-            let logoShape;
-            if (shape == "triangle"){
-                logoShape = new triangle(color, text, draw);
-                var myTriangle = logoShape.drawTriangle;
-                const callback = function(err){
-                    err ? console.error(err) : console.log('Commit logged!')
-                  }
-                  fs.writeFile("triangle.svg", myTriangle, callback)
+const questions= [
+{
+    type: "input",
+    name: "text",
+    message: "Input a catchy phrase or company name for your logo!"
+},
+{
+    type: "input",
+    name: "color",
+    message: "What color is your logo?"
+},
+{
+    type: "list",
+    name: "shape",
+    message: "What shape is your logo?",
+    choices: ["triangle", "circle", "square"]
+}
+]
+
+inquirer.prompt(questions).then(answers=>{
+    let logoShape;
+    let svgContent; 
+    if(answers.shape === "triangle"){
+        logoShape = new triangle(answers.color, answers.text);
+        svgContent = logoShape.drawTriangle();
+        fs.writeFile("logo.svg", svgContent, err =>{
+            if(err){
+                console.error(err);
+            } else{
+                console.log("File saved successfully.")
             }
-            if (shape == "circle"){
-                logoShape = new circle(color, text, draw);
-                var myCircle = logoShape.drawCircle;
-                const callback = function(err){
-                    err ? console.error(err) : console.log('Commit logged!')
-                  }
-                  fs.writeFile("circle.svg", myCircle, callback)
+        })
+    } else if(answers.shape === "circle"){
+        logoShape = new circle(answers.color, answers.text);
+        svgContent = logoShape.drawCircle();
+        fs.writeFile("logo.svg", svgContent, err =>{
+            if(err){
+                console.error(err);
+            } else{
+                console.log("File saved successfully.")
             }
-            if (shape == "square"){
-                logoShape = new square(color, text, draw);
-                var mySquare = logoShape.drawSquare;
-                const callback = function(err){
-                    err ? console.error(err) : console.log('Commit logged!')
-                  }
-                  fs.writeFile("square.svg", mySquare, callback)
+        })
+    } else if(answers.shape === "square"){
+        logoShape = new square(answers.color, answers.text);
+        svgContent = logoShape.drawSquare();
+        fs.writeFile("logo.svg", svgContent, err =>{
+            if(err){
+                console.error(err);
+            } else{
+                console.log("File saved successfully.")
             }
-            rlInterface.close();
-})
-    })
-})
+        })
+    } else{
+        console.error("Invalid Input");
+        return;
+    }
+}).catch((err)=>console.log("Error in program: ", err));
